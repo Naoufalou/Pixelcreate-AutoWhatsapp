@@ -203,6 +203,43 @@ app.whenReady().then(() => {
     return writeCampaigns(campaigns);
   });
 
+  ipcMain.handle('select-file', async () => {
+    const { dialog } = require('electron');
+    const result = await dialog.showOpenDialog(mainWindow, {
+      properties: ['openFile'],
+      filters: [
+        { name: 'Images & Documents', extensions: ['png', 'jpg', 'jpeg', 'gif', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'csv'] },
+        { name: 'Tous les fichiers', extensions: ['*'] }
+      ]
+    });
+    if (!result.canceled && result.filePaths.length > 0) {
+      return result.filePaths[0];
+    }
+    return null;
+  });
+
+  ipcMain.handle('copy-file-to-clipboard', async (event, filePath) => {
+    const { clipboard } = require('electron');
+    try {
+      if (fs.existsSync(filePath)) {
+        clipboard.write({
+          files: [filePath]
+        });
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.error('Failed to copy file to clipboard:', err);
+      return false;
+    }
+  });
+
+  ipcMain.handle('clear-clipboard', async () => {
+    const { clipboard } = require('electron');
+    clipboard.clear();
+    return true;
+  });
+
   createWindow();
 
   // Check for updates and notify the user

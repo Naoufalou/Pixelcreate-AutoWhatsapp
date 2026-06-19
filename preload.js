@@ -11,5 +11,8 @@ contextBridge.exposeInMainWorld('api', {
   addContactedNumber: (phone) => ipcRenderer.invoke('add-contacted-number', phone),
   clearContactedNumbers: () => ipcRenderer.invoke('clear-contacted-numbers'),
   getCampaigns: () => ipcRenderer.invoke('get-campaigns'),
-  saveCampaigns: (campaigns) => ipcRenderer.invoke('save-campaigns', campaigns)
+  saveCampaigns: (campaigns) => ipcRenderer.invoke('save-campaigns', campaigns),
+  selectFile: () => ipcRenderer.invoke('select-file'),
+  copyFileToClipboard: (filePath) => ipcRenderer.invoke('copy-file-to-clipboard', filePath),
+  clearClipboard: () => ipcRenderer.invoke('clear-clipboard')
 });

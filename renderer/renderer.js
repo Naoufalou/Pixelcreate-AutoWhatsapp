@@ -73,6 +73,9 @@ const loadedCsvContainer = document.getElementById('loaded-csv-container');
 const loadedCsvFilename = document.getElementById('loaded-csv-filename');
 const loadedCsvCount = document.getElementById('loaded-csv-count');
 const btnClearCsv = document.getElementById('btn-clear-csv');
+const campaignAttachmentPathInput = document.getElementById('campaign-attachment-path');
+const btnSelectAttachment = document.getElementById('btn-select-attachment');
+const btnClearAttachment = document.getElementById('btn-clear-attachment');
 const btnResetContacted = document.getElementById('btn-reset-contacted');
 const btnResetContactedGlobal = document.getElementById('btn-reset-contacted-global');
 const campaignPromptInput = document.getElementById('campaign-prompt');
@@ -196,6 +199,8 @@ async function init() {
   campaignContactsInput.addEventListener('input', handleContactsTextChange);
   btnImportFile.addEventListener('click', () => fileInput.click());
   fileInput.addEventListener('change', handleFileImport);
+  btnSelectAttachment.addEventListener('click', selectCampaignAttachment);
+  btnClearAttachment.addEventListener('click', clearCampaignAttachment);
   btnTestLlm.addEventListener('click', testLlmConnection);
   btnStartCampaign.addEventListener('click', startCampaign);
   btnPauseCampaign.addEventListener('click', pauseCampaign);
@@ -952,6 +957,26 @@ function renderContactsPreview() {
   }
 }
 
+// Campaign Attachment Select / Clear
+async function selectCampaignAttachment() {
+  try {
+    const filePath = await window.api.selectFile();
+    if (filePath) {
+      campaignAttachmentPathInput.value = filePath;
+      btnClearAttachment.style.display = 'inline-flex';
+      logToConsole(`Pièce jointe sélectionnée : ${filePath.split('/').pop()}`, 'info');
+    }
+  } catch (err) {
+    console.error("Failed to select file:", err);
+  }
+}
+
+function clearCampaignAttachment() {
+  campaignAttachmentPathInput.value = '';
+  btnClearAttachment.style.display = 'none';
+  logToConsole("Pièce jointe retirée.", 'info');
+}
+
 // File Import Handler
 function handleFileImport(e) {
   const file = e.target.files[0];
@@ -1266,7 +1291,7 @@ Consignes strictes :
 }
 
 // Automation Execution: Load URL and trigger send inside webview
-function executeSendInsideWebview(senderId, phone, message) {
+function executeSendInsideWebview(senderId, phone, message, attachmentPath = null) {
   return new Promise((resolve) => {
     const wv = document.getElementById(`webview-${senderId}`);
     if (!wv) {
@@ -1287,6 +1312,28 @@ function executeSendInsideWebview(senderId, phone, message) {
       await sleep(2500);
       
       try {
+        if (attachmentPath) {
+          const success = await window.api.copyFileToClipboard(attachmentPath);
+          if (success) {
+            wv.focus();
+            await wv.executeJavaScript(`
+              (function() {
+                const textBox = document.querySelector('div[contenteditable="true"]') ||
+                                document.querySelector('[data-testid="conversation-compose-box-input"]') ||
+                                document.querySelector('.copyable-text.selectable-text[contenteditable="true"]');
+                if (textBox) {
+                  textBox.focus();
+                }
+              })()
+            `);
+            await sleep(500);
+            wv.paste();
+            // Wait for attachment preview dialog to appear
+            await sleep(2000);
+          } else {
+            console.error("Failed to copy attachment file to clipboard.");
+          }
+        }
         const checkScript = `
           (function() {
             return new Promise((resolve) => {
@@ -1357,8 +1404,14 @@ function executeSendInsideWebview(senderId, phone, message) {
         `;
         
         const result = await wv.executeJavaScript(checkScript);
+        if (attachmentPath) {
+          await window.api.clearClipboard();
+        }
         resolve(result);
       } catch (err) {
+        if (attachmentPath) {
+          await window.api.clearClipboard();
+        }
         resolve({ status: 'error', reason: err.message });
       }
     };
@@ -1597,9 +1650,14 @@ async function runCampaignLoop() {
   const rewritten = await rewriteMessageWithLocalAI(personalizedPrompt, tone, lmUrl, modelId, provider, apiKey);
   logToConsole(`Message généré : "${rewritten}"`, 'accent');
 
-  logToConsole(`Envoi du message vers ${contact.phone}...`, 'info');
+  const attachmentPath = campaignAttachmentPathInput.value || null;
+  if (attachmentPath) {
+    logToConsole(`Envoi du message avec pièce jointe (${attachmentPath.split('/').pop()}) vers ${contact.phone}...`, 'info');
+  } else {
+    logToConsole(`Envoi du message vers ${contact.phone}...`, 'info');
+  }
   
-  const sendResult = await executeSendInsideWebview(senderId, contact.phone, rewritten);
+  const sendResult = await executeSendInsideWebview(senderId, contact.phone, rewritten, attachmentPath);
   
   if (sendResult.status === 'sent') {
     campaignSentCount++;
@@ -1659,6 +1717,8 @@ function lockCampaignForm(locked) {
   btnImportFile.disabled = locked;
   campaignPromptInput.disabled = locked;
   campaignToneSelect.disabled = locked;
+  btnSelectAttachment.disabled = locked;
+  btnClearAttachment.disabled = locked;
   delayMinInput.disabled = locked;
   delayMaxInput.disabled = locked;
 }
