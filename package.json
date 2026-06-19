@@ -1,0 +1,66 @@
+{
+  "name": "multi-whatsapp-mac",
+  "version": "1.0.0",
+  "description": "Multi-Account WhatsApp client for macOS",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build:mac": "electron-builder --mac",
+    "build:win": "electron-builder --win",
+    "build:all": "electron-builder --mac --win"
+  },
+  "keywords": [],
+  "author": "Antigravity",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.antigravity.multiwhatsapp",
+    "productName": "Multi-WhatsApp",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Naoufalou",
+        "repo": "Pixelcreate-AutoWhatsapp"
+      }
+    ],
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "category": "public.app-category.social-networking",
+      "artifactName": "final1.dmg"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "artifactName": "final1.exe"
+    },
+    "dmg": {
+      "iconSize": 100,
+      "contents": [
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 130,
+          "y": 220,
+          "type": "file"
+        }
+      ]
+    },
+    "directories": {
+      "output": "dist"
+    }
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "electron-updater": "^6.8.9"
+  }
+}

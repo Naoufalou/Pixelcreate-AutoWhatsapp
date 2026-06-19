@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi-WhatsApp Campaigner & Warmer</title>
+  <link rel="stylesheet" href="index.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Drag area for native macOS feel -->
+  <div class="titlebar-drag-region"></div>
+
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">
+          <svg class="brand-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.48 2 2 6.48 2 12C2 13.9 2.53 15.67 3.45 17.18L2.05 21.95C2.01 22.09 2.05 22.25 2.15 22.35C2.22 22.42 2.32 22.46 2.42 22.46C2.47 22.46 2.51 22.45 2.56 22.43L7.14 20.91C8.6 21.61 10.25 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM17.11 15.65C16.9 16.25 16.03 16.71 15.42 16.84C14.93 16.94 14.29 17.02 12.16 16.13C9.42 15 7.65 12.21 7.51 12.03C7.38 11.85 6.38 10.51 6.38 9.13C6.38 7.75 7.08 7.08 7.37 6.78C7.6 6.55 7.98 6.44 8.34 6.44C8.46 6.44 8.57 6.45 8.66 6.45C8.93 6.46 9.07 6.48 9.25 6.91C9.48 7.47 10.05 8.87 10.12 9.01C10.19 9.16 10.26 9.36 10.16 9.56C10.06 9.76 9.98 9.87 9.83 10.04C9.68 10.21 9.54 10.34 9.39 10.53C9.25 10.7 9.09 10.89 9.27 11.2C9.45 11.5 10.08 12.53 11.01 13.36C12.21 14.43 13.2 14.77 13.54 14.91C13.88 15.05 14.08 15.02 14.28 14.79C14.48 14.56 15.14 13.78 15.35 13.48C15.56 13.18 15.77 13.22 16.06 13.33C16.35 13.44 17.89 14.2 18.2 14.36C18.51 14.52 18.72 14.6 18.79 14.72C18.87 14.85 18.87 15.45 18.62 16.05L17.11 15.65Z" fill="currentColor"/>
+          </svg>
+          <h1>Multi-WhatsApp</h1>
+        </div>
+        <button id="btn-add-account" class="btn btn-primary">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span>Ajouter</span>
+        </button>
+      </div>
+
+      <!-- Navigation Links -->
+      <div class="sidebar-campaign-nav">
+        <div id="nav-campaigns" class="campaign-nav-item">
+          <svg class="icon nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+          <span>Campagnes & IA</span>
+        </div>
+        <div id="nav-warmup" class="campaign-nav-item mt-2">
+          <svg class="icon nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path>
+          </svg>
+          <span>Chauffage de comptes</span>
+        </div>
+        <div id="nav-history" class="campaign-nav-item mt-2">
+          <svg class="icon nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span>Historique</span>
+        </div>
+      </div>
+
+      <div class="sidebar-section-title">Comptes WhatsApp</div>
+      
+      <!-- Account List -->
+      <div id="accounts-list" class="accounts-list">
+        <!-- Accounts will be injected here dynamically -->
+      </div>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <div class="author-tag">
+          <span>Antigravity OS v1.3</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <main class="workspace">
+      <!-- Welcome Screen (shown when no account is added or active) -->
+      <div id="welcome-screen" class="welcome-screen">
+        <div class="glass-card welcome-card">
+          <div class="welcome-icon-wrapper">
+            <svg class="welcome-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+            </svg>
+          </div>
+          <h2>Connectez plusieurs comptes WhatsApp</h2>
+          <p>Scannez le QR Code de chaque compte individuel. Vos sessions sont entièrement isolées, sécurisées et conservées localement.</p>
+          <button id="btn-welcome-add" class="btn btn-primary btn-large">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>Ajouter votre premier compte</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Campaign Manager View (visible when clicking "Campagnes & IA") -->
+      <div id="campaign-view" class="campaign-view">
+        <div class="campaign-header">
+          <h2>Campagnes de Prospection & Relance</h2>
+          <p>Générez des messages uniques avec LM Studio pour éviter le bannissement de vos comptes.</p>
+        </div>
+        
+        <div class="campaign-grid">
+          <!-- Left Configuration Pane -->
+          <div class="campaign-config glass-card">
+            <h3>Configuration de la campagne</h3>
+            
+            <div class="form-group">
+              <label>Comptes Expéditeurs (Multi-sélection possible)</label>
+              <div id="campaign-senders-checkboxes" class="checkbox-list" style="max-height: 120px; overflow-y: auto;">
+                <!-- Checkboxes will be injected here dynamically -->
+                <p class="input-sub no-accounts-warn">Aucun compte configuré.</p>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="label-with-action" style="flex-wrap: wrap; gap: 8px;">
+                <label for="campaign-contacts">Contacts (Destinataires)</label>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                  <button id="btn-reset-contacted-global" type="button" class="btn-text" style="color: #30d158; font-weight: 500; font-size: 0.85rem;">Réinitialiser les doublons</button>
+                  <button id="btn-import-file" class="btn-text">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="17 8 12 3 7 8"></polyline>
+                      <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    Importer CSV/TXT
+                  </button>
+                </div>
+                <input type="file" id="contacts-file-input" style="display: none;" accept=".txt,.csv">
+              </div>
+              
+              <!-- Clean loaded CSV representation -->
+              <div id="loaded-csv-container" style="display: none; align-items: center; justify-content: space-between; padding: 10px 14px; background: rgba(255,255,255,0.06); border-radius: 8px; margin-bottom: 8px; border: 1px dashed rgba(255,255,255,0.15);">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <svg class="icon" style="color: #4cd964; width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                  </svg>
+                  <div>
+                    <span id="loaded-csv-filename" style="font-weight: 600; font-size: 0.9rem; color: #fff; display: block;">contacts.csv</span>
+                    <span id="loaded-csv-count" style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">0 contact(s) détecté(s)</span>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <button id="btn-reset-contacted" type="button" class="btn-text" style="color: #30d158; padding: 4px 8px; font-weight: 500; font-size: 0.85rem;">Réinitialiser les doublons</button>
+                  <button id="btn-clear-csv" type="button" class="btn-text" style="color: #ff3b30; padding: 4px 8px; font-weight: 500; font-size: 0.85rem;">Retirer</button>
+                </div>
+              </div>
+
+              <textarea id="campaign-contacts" rows="3" placeholder="Entrez les numéros de téléphone (un par ligne)... ou importez un CSV (Nom,Téléphone)."></textarea>
+              <span id="contacts-count-tag" class="count-tag">0 contact valide détecté</span>
+            </div>
+
+            <!-- Preview of parsed CSV client contacts -->
+            <div class="form-group">
+              <label>Prévisualisation des Clients Importés</label>
+              <div id="contacts-preview-list" class="contacts-preview-list">
+                <span class="no-contacts-preview">Aucun contact importé. Saisissez du texte ou chargez un fichier CSV.</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="label-with-action">
+                <label for="campaign-prompt">Message de base / Prompt de campagne</label>
+                <span class="count-tag">Utilisez {nom} pour personnaliser</span>
+              </div>
+              <textarea id="campaign-prompt" rows="3" placeholder="Ex: Bonjour {nom}, j'espère que tu vas bien. Je te contacte pour savoir si tu as reçu notre dernier e-mail..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="campaign-tone">Style de réécriture par l'IA</label>
+              <select id="campaign-tone" class="form-select">
+                <option value="courteous_short">Toujours courtois et court</option>
+                <option value="concise_humor">Très concis avec une pointe d'humour</option>
+                <option value="detailed">Un peu plus long et explicatif</option>
+                <option value="followup_cold">Relance amicale et polie</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="display: none;">
+              <label for="campaign-api-provider">Fournisseur d'API IA</label>
+              <select id="campaign-api-provider" class="form-select">
+                <option value="none">Sans IA (Message direct / Spintax)</option>
+                <option value="lmstudio" selected>LM Studio (Local / Réseau)</option>
+                <option value="openai">OpenAI (Cloud)</option>
+              </select>
+            </div>
+
+            <div class="form-row" id="row-campaign-api-settings" style="display: none;">
+              <div class="form-group">
+                <label for="lmstudio-url" id="lbl-campaign-url">URL de l'API</label>
+                <input type="text" id="lmstudio-url" value="http://192.168.1.41:1234/v1" placeholder="http://192.168.1.41:1234/v1">
+              </div>
+              <div class="form-group">
+                <label for="campaign-model-id">Modèle d'IA (ID)</label>
+                <input type="text" id="campaign-model-id" value="meta-llama-3.1-8b-instruct" placeholder="meta-llama-3.1-8b-instruct">
+              </div>
+            </div>
+
+            <div class="form-group" id="grp-campaign-api-key" style="display: none;">
+              <label for="campaign-api-key">Clé API OpenAI</label>
+              <input type="password" id="campaign-api-key" placeholder="Saisissez votre clé sk-..." autocomplete="off">
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="delay-min">Délai Min (s)</label>
+                <input type="number" id="delay-min" value="6" min="3">
+              </div>
+              <div class="form-group">
+                <label for="delay-max">Délai Max (s)</label>
+                <input type="number" id="delay-max" value="15" min="5">
+              </div>
+            </div>
+
+            <div class="form-group" style="flex-direction: row; align-items: center; gap: 8px; margin-top: 5px;">
+              <input type="checkbox" id="chk-anti-dupe" checked style="width: 18px; height: 18px; accent-color: var(--color-primary); cursor: pointer;">
+              <label for="chk-anti-dupe" style="cursor: pointer; text-transform: none; font-size: 0.85rem; font-weight: 500; color: white;">Activer la sécurité anti-doublon</label>
+            </div>
+
+            <div class="form-row" id="row-campaign-api-test" style="display: none;">
+              <div class="form-group">
+                <button id="btn-test-llm" class="btn btn-secondary w-full">Tester la connexion à l'IA</button>
+              </div>
+            </div>
+
+            <div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+              <h3>Sauvegarde de l'activité</h3>
+              <div class="form-group mb-0">
+                <div style="display: flex; align-items: center; gap: 8px; padding: 10px; background: rgba(76,217,100,0.1); border: 1px solid rgba(76,217,100,0.2); border-radius: 6px;">
+                  <span class="status-dot connected"></span>
+                  <span style="font-size: 0.85rem; color: #4cd964; font-weight: 500;">Sauvegarde centralisée sur Supabase active</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Status & Execution Pane -->
+          <div class="campaign-execution glass-card">
+            <h3>Contrôle & Suivi</h3>
+            
+            <div class="execution-status-card">
+              <div class="status-indicator">
+                <span id="campaign-status-dot" class="status-dot"></span>
+                <span id="campaign-status-text">Statut : Inactif</span>
+              </div>
+              
+              <div class="progress-container">
+                <div class="progress-labels">
+                  <span>Progression</span>
+                  <span id="progress-text">0 / 0</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div id="progress-bar-fill" class="progress-bar-fill"></div>
+                </div>
+              </div>
+
+              <div class="stats-row">
+                <div class="stat-card">
+                  <div id="stat-sent" class="stat-number">0</div>
+                  <div class="stat-label">Envoyés</div>
+                </div>
+                <div class="stat-card">
+                  <div id="stat-failed" class="stat-number danger">0</div>
+                  <div class="stat-label">Échecs / Invalides</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="control-actions">
+              <button id="btn-start-campaign" class="btn btn-primary btn-large flex-1">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                <span>Lancer la campagne</span>
+              </button>
+              
+              <button id="btn-pause-campaign" class="btn btn-secondary btn-large flex-1" style="display: none;">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="6" y="4" width="4" height="16"></rect>
+                  <rect x="14" y="4" width="4" height="16"></rect>
+                </svg>
+                <span>Mettre en pause</span>
+              </button>
+              
+              <button id="btn-reset-campaign" class="btn btn-secondary btn-large">Réinitialiser</button>
+            </div>
+
+            <!-- Console Log -->
+            <div class="console-log-wrapper">
+              <div class="console-header">
+                <span>Console d'Exécution</span>
+                <button id="btn-clear-console" class="btn-text">Effacer</button>
+              </div>
+              <div id="console-output" class="console-output">
+                <div class="console-line system">Console prête. En attente du lancement d'une campagne...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Account Warm-up View (visible when clicking "Chauffage de comptes") -->
+      <div id="warmup-view" class="campaign-view">
+        <div class="campaign-header">
+          <h2>Chauffage de Comptes (Anti-Ban)</h2>
+          <p>Faites discuter vos propres comptes WhatsApp entre eux via l'IA locale pour simuler une activité organique et naturelle.</p>
+        </div>
+        
+        <div class="campaign-grid">
+          <!-- Left Warm-up Configuration Pane -->
+          <div class="campaign-config glass-card">
+            <h3>Configuration du chauffage</h3>
+            
+            <div class="form-group">
+              <label>Sélectionner les comptes à chauffer (min 2)</label>
+              <div id="warmup-accounts-checkboxes" class="checkbox-list">
+                <!-- Checkboxes will be injected here dynamically -->
+                <p class="input-sub no-accounts-warn">Aucun compte avec numéro de téléphone configuré.</p>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="warmup-prompt">Sujet de discussion / Prompt guide</label>
+              <textarea id="warmup-prompt" rows="3" placeholder="Entrez un sujet ou laissez vide. Ex: Discuter de projets du quotidien, demander des nouvelles, parler de météo..."></textarea>
+            </div>
+
+            <div class="form-group" style="display: none;">
+              <label for="warmup-api-provider">Fournisseur d'API IA</label>
+              <select id="warmup-api-provider" class="form-select">
+                <option value="none">Sans IA (Messages de repli intégrés)</option>
+                <option value="lmstudio" selected>LM Studio (Local / Réseau)</option>
+                <option value="openai">OpenAI (Cloud)</option>
+              </select>
+            </div>
+
+            <div class="form-row" id="row-warmup-api-settings" style="display: none;">
+              <div class="form-group">
+                <label for="warmup-lmstudio-url" id="lbl-warmup-url">URL de l'API</label>
+                <input type="text" id="warmup-lmstudio-url" value="http://192.168.1.41:1234/v1">
+              </div>
+              <div class="form-group">
+                <label for="warmup-model-id">Modèle d'IA (ID)</label>
+                <input type="text" id="warmup-model-id" value="meta-llama-3.1-8b-instruct">
+              </div>
+            </div>
+
+            <div class="form-group" id="grp-warmup-api-key" style="display: none;">
+              <label for="warmup-api-key">Clé API OpenAI</label>
+              <input type="password" id="warmup-api-key" placeholder="Saisissez votre clé sk-..." autocomplete="off">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="warmup-delay-min">Délai Min (s)</label>
+                <input type="number" id="warmup-delay-min" value="30" min="10">
+              </div>
+              <div class="form-group">
+                <label for="warmup-delay-max">Délai Max (s)</label>
+                <input type="number" id="warmup-delay-max" value="90" min="15">
+              </div>
+            </div>
+
+            <div class="form-row" id="row-warmup-api-test" style="display: none;">
+              <div class="form-group">
+                <button id="btn-warmup-test-llm" class="btn btn-secondary w-full">Tester la connexion à l'IA</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Warm-up Chat Simulator Pane -->
+          <div class="campaign-execution glass-card">
+            <h3>Simulation en cours</h3>
+            
+            <div class="execution-status-card">
+              <div class="status-indicator">
+                <span id="warmup-status-dot" class="status-dot"></span>
+                <span id="warmup-status-text">Statut : Inactif</span>
+              </div>
+              
+              <div class="status-details">
+                <span id="warmup-active-pair">Actif : En attente...</span>
+              </div>
+            </div>
+
+            <div class="control-actions">
+              <button id="btn-start-warmup" class="btn btn-primary btn-large flex-1">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                <span>Démarrer le chauffage</span>
+              </button>
+              
+              <button id="btn-pause-warmup" class="btn btn-secondary btn-large flex-1" style="display: none;">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="6" y="4" width="4" height="16"></rect>
+                  <rect x="14" y="4" width="4" height="16"></rect>
+                </svg>
+                <span>Mettre en pause</span>
+              </button>
+              
+              <button id="btn-reset-warmup" class="btn btn-secondary btn-large">Réinitialiser</button>
+            </div>
+
+            <!-- Warm-up Dialogue Window -->
+            <div class="console-log-wrapper">
+              <div class="console-header">
+                <span>Discussion en temps réel</span>
+                <button id="btn-clear-warmup-chat" class="btn-text">Effacer</button>
+              </div>
+              <!-- This will look like a messaging window -->
+              <div id="warmup-chat-box" class="warmup-chat-box">
+                <div class="warmup-system-message">Discussion non démarrée. Sélectionnez vos comptes et lancez la simulation.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Campaign History View (visible when clicking "Historique") -->
+      <div id="history-view" class="campaign-view">
+        <div class="campaign-header">
+          <h2>Historique des Campagnes</h2>
+          <p>Retrouvez le suivi complet de vos envois et les messages personnalisés générés par l'IA.</p>
+        </div>
+        
+        <div class="glass-card" style="padding: 28px; min-height: 500px; display: flex; flex-direction: column; gap: 20px;">
+          <h3>Toutes les campagnes</h3>
+          <div id="history-empty" class="warmup-system-message" style="align-self: center; margin-top: 60px;">Aucune campagne passée enregistrée pour le moment.</div>
+          <div id="history-list" class="checkbox-list" style="max-height: 520px; background: transparent; border: none; padding: 0; display: none; gap: 12px;">
+            <!-- History items will be injected here dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Webview Container for isolated instances -->
+      <div id="webview-container" class="webview-container">
+        <!-- Webviews will be injected here dynamically -->
+      </div>
+    </main>
+  </div>
+
+  <!-- Add Account Modal -->
+  <div id="add-modal" class="modal-overlay">
+    <div class="glass-card modal-content">
+      <div class="modal-header">
+        <h3>Nouveau compte WhatsApp</h3>
+        <button id="btn-close-modal" class="btn-close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group mb-2">
+          <label for="account-name-input">Nom du compte</label>
+          <p class="input-sub">Ex: Travail, Personnel, France, Support, etc.</p>
+          <input type="text" id="account-name-input" placeholder="Entrez un nom pour ce compte..." autocomplete="off">
+        </div>
+        <span id="modal-error-message" class="error-message">Le nom du compte est requis et doit être unique.</span>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-cancel-modal" class="btn btn-secondary">Annuler</button>
+        <button id="btn-submit-account" class="btn btn-primary">Créer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Account Modal -->
+  <div id="edit-modal" class="modal-overlay">
+    <div class="glass-card modal-content">
+      <div class="modal-header">
+        <h3>Modifier le compte</h3>
+        <button id="btn-close-edit-modal" class="btn-close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group mb-2">
+          <label for="edit-account-name-input">Nom du compte</label>
+          <input type="text" id="edit-account-name-input" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label for="edit-account-phone-input">Numéro de téléphone WhatsApp</label>
+          <p class="input-sub">Ex: +33612345678 (Optionnel, requis pour le chauffage uniquement)</p>
+          <input type="text" id="edit-account-phone-input" placeholder="Ex: +33612345678" autocomplete="off">
+        </div>
+        <span id="edit-modal-error-message" class="error-message">Le nom est requis et doit être unique.</span>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-cancel-edit-modal" class="btn btn-secondary">Annuler</button>
+        <button id="btn-submit-edit-account" class="btn btn-primary">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- History Detail Modal -->
+  <div id="history-detail-modal" class="modal-overlay">
+    <div class="glass-card modal-content" style="max-width: 700px; max-height: 80vh; display: flex; flex-direction: column;">
+      <div class="modal-header">
+        <h3 id="history-detail-title">Détails de la Campagne</h3>
+        <button id="btn-close-history-modal" class="btn-close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body" style="overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 14px; padding-right: 5px;">
+        <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px; font-size: 0.9rem;">
+          <div><strong>Expéditeur :</strong> <span id="history-detail-sender"></span></div>
+          <div><strong>Date :</strong> <span id="history-detail-date"></span></div>
+          <div><strong>Stats :</strong> <span id="history-detail-stats" style="color: #4cd964; font-weight: 600;"></span></div>
+        </div>
+        <div style="font-weight: 600; font-size: 0.85rem; text-transform: uppercase; color: var(--color-text-muted); margin-top: 10px;">Messages envoyés</div>
+        <div id="history-detail-messages" style="display: flex; flex-direction: column; gap: 10px; max-height: 400px; overflow-y: auto; padding-right: 5px;">
+          <!-- Messages will be injected here dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
